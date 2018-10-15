@@ -19,6 +19,12 @@ class LotteryController extends Controller
 
     public function generate() 
     {
+        $data = $this->_generateThreeNumbers();
+        return $data;
+    }
+
+    private function _generateThreeNumbers() 
+    {
         // fetch all lottery from sql
         $numbers = config('lottery.numbers');
         // 1st number
@@ -28,9 +34,16 @@ class LotteryController extends Controller
         // 3rd number
         $third = $this->_generateNumber($numbers, [$first, $second]);
 
-        return compact('first', 'second', 'third');
-    }
+        $data = compact('first', 'second', 'third');
 
+        $input = [ $first, $second, $third ];
+        $result = Lottery::validateNumbers($input)->first();
+        // if there's already sequence recreate from top
+        if(!EMPTY($result)) $data = $this->_generateThreeNumbers();
+
+        return $data;
+    }
+    
     private function _generateNumber($limit, $comparison = []) 
     {
         $generatedNumber = rand($limit['min'], $limit['max']);;
