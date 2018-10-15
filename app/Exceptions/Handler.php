@@ -46,6 +46,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof \PDOException) {
+            $message = "Error. Internal Server Error";
+            return response()->json(compact('message'), 500);
+        }
+
         return parent::render($request, $exception);
     }
 }

@@ -13689,7 +13689,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(11);
-module.exports = __webpack_require__(37);
+module.exports = __webpack_require__(38);
 
 
 /***/ }),
@@ -13705,7 +13705,7 @@ module.exports = __webpack_require__(37);
 
 __webpack_require__(12);
 
-__webpack_require__(36);
+__webpack_require__(37);
 
 /***/ }),
 /* 12 */
@@ -13751,7 +13751,7 @@ if (token) {
   console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
-window.swal = __webpack_require__(42);
+window.swal = __webpack_require__(36);
 
 // intercept error to centralize the handling of error
 // window.axios.interceptors.response.use((response) => {
@@ -35961,69 +35961,6 @@ module.exports = function spread(callback) {
 
 /***/ }),
 /* 36 */
-/***/ (function(module, exports) {
-
-// const actions = require('./lottery-actions');
-
-var generateBtn = document.querySelector('#generateBtn');
-var input = {
-    first: document.querySelector('#lottery1'),
-    second: document.querySelector('#lottery2'),
-    third: document.querySelector('#lottery3')
-};
-
-generateBtn.onclick = function () {
-    generateBtn.setAttribute('disabled', 'disabled');
-    // request to server about the numbers
-    window.axios.get('generate').then(function (response) {
-        var data = response.data;
-        show('#randomNumbers');
-        input.first.value = data.first;
-        input.second.value = data.second;
-        input.third.value = data.third;
-        generateBtn.removeAttribute('disabled');
-    });
-};
-
-var confirmBtn = document.querySelector('#confirmBtn');
-
-confirmBtn.onclick = function () {
-    var formData = {
-        first: input.first.value,
-        second: input.second.value,
-        third: input.third.value
-    };
-    window.axios.post('submit', formData).then(function (response) {
-        var data = response.data;
-
-        window.swal('tst', data.message, 'success');
-    }, function (errors) {
-        console.log('errors???', errors.response.data);
-        window.swal(errors.response.data.message);
-    });
-};
-
-show = function show(element) {
-    // remove d-none class (Bootstrap 4) 
-    document.querySelector(element).classList.remove('d-none');
-};
-
-replaceInputValue = function replaceInputValue(element, newValue) {
-    document.querySelector(element).value = newValue;
-};
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -39785,6 +39722,72 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.Sweetalert2.ve
 "      display: none; }\n" +
 "    body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container {\n" +
 "      position: initial !important; } }");
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+// const actions = require('./lottery-actions');
+
+var generateBtn = document.querySelector('#generateBtn');
+var input = {
+    first: document.querySelector('#lottery1'),
+    second: document.querySelector('#lottery2'),
+    third: document.querySelector('#lottery3')
+};
+
+generateBtn.onclick = function () {
+    generateBtn.setAttribute('disabled', 'disabled');
+    // request to server about the numbers
+    window.axios.get('generate').then(function (response) {
+        var data = response.data;
+        show('#randomNumbers');
+        input.first.value = data.first;
+        input.second.value = data.second;
+        input.third.value = data.third;
+        generateBtn.removeAttribute('disabled');
+    }, function (errors) {
+        console.log(errors);
+        generateBtn.removeAttribute('disabled');
+
+        window.swal(errors.response.data.message);
+    });
+};
+
+var confirmBtn = document.querySelector('#confirmBtn');
+
+confirmBtn.onclick = function () {
+    var formData = {
+        first: input.first.value,
+        second: input.second.value,
+        third: input.third.value
+    };
+
+    confirmBtn.setAttribute('disabled', 'disabled');
+    window.axios.post('submit', formData).then(function (response) {
+        var data = response.data;
+        confirmBtn.removeAttribute('disabled');
+        window.swal('Success', data.message, 'success');
+    }, function (errors) {
+        confirmBtn.removeAttribute('disabled');
+        window.swal(errors.response.data.message);
+    });
+};
+
+show = function show(element) {
+    // remove d-none class (Bootstrap 4) 
+    document.querySelector(element).classList.remove('d-none');
+};
+
+replaceInputValue = function replaceInputValue(element, newValue) {
+    document.querySelector(element).value = newValue;
+};
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

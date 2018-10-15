@@ -17,6 +17,11 @@ generateBtn.onclick = () => {
         input.second.value = data.second;
         input.third.value = data.third;
         generateBtn.removeAttribute('disabled');
+    }, (errors) => {
+        console.log(errors);
+        generateBtn.removeAttribute('disabled');
+        
+        window.swal(errors.response.data.message);
     });
 }
 
@@ -28,12 +33,14 @@ confirmBtn.onclick = () => {
         second: input.second.value,
         third: input.third.value,
     };
+
+    confirmBtn.setAttribute('disabled', 'disabled');
     window.axios.post('submit', formData).then((response) => {
         let data = response.data;
-
-        window.swal('tst', data.message, 'success');
+        confirmBtn.removeAttribute('disabled');
+        window.swal('Success', data.message, 'success');
     }, (errors) => {
-        console.log('errors???', errors.response.data);
+        confirmBtn.removeAttribute('disabled');
         window.swal(errors.response.data.message);
     });
 }

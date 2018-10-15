@@ -20,34 +20,26 @@ class LotteryController extends Controller
     public function generate() 
     {
         // fetch all lottery from sql
-        $lotteries = Lottery::get();
+        $numbers = config('lottery.numbers');
+        // 1st number
+        $first = $this->_generateNumber($numbers);
+        // 2nd number
+        $second = $this->_generateNumber($numbers, [$first]);
+        // 3rd number
+        $third = $this->_generateNumber($numbers, [$first, $second]);
 
-        $randomNumbers = [
-            'first' => $this->_generateNumber('first_number', $lotteries),
-            'second' => $this->_generateNumber('second_number', $lotteries),
-            'third' => $this->_generateNumber('third_number', $lotteries),
-        ];
-
-        return $randomNumbers;
+        return compact('first', 'second', 'third');
     }
 
-    private function _generateNumber($column, $data) 
+    private function _generateNumber($limit, $comparison = []) 
     {
-        $recordedNumbers = $data->pluck($column)->toArray();
-        $limit = config('lottery.numbers');
+        $generatedNumber = rand($limit['min'], $limit['max']);;
+        
+        // if generated number already exists regenerate
+        if(in_array($generatedNumber, $comparison))
+            $generatedNumber = $this->_generateNumber($limit, $comparison);
 
-        $generatedNumber = $this->_regenerateNumber($limit);
-
-        return (in_array($generatedNumber, $recordedNumbers)) 
-            // if in array regenerate again
-            ? $this->_regenerateNumber($limit)
-            // if not in array display the generated number
-            : $generatedNumber;
-    }
-
-    private function _regenerateNumber($limit) 
-    {
-        return rand($limit['min'], $limit['max']);
+        return $generatedNumber; 
     }
 
     public function submit(ConfirmLottery $request) 
